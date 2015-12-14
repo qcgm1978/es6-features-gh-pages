@@ -45,12 +45,25 @@
         $(".showcase").css("display", "none")
         $(".showcase:first").css("display", "block")
         $("li.subtitle:first").addClass("selected")
-        $(".nav a").click(function (ev) {
-            var id = $(ev.target).attr("href").replace(/^#/, "")
+        function switchEs6(ev) {
+            if (ev.target) {
+                var id = $(ev.target).attr("href").replace(/^#/, "")
+            } else {
+                var id = $(".showcase:visible").attr('id')
+            }
+            var $content = $(".showcase_" + id);
+            var $title = $("li.subtitle_" + id);
+            if (ev===true) {
+                $content = $content.next()
+                $title = $title.next().length==0?   $("li.subtitle_" + id).parent().parent().next().find('.subtitle:first'):$title.next()
+            }else{
+                $content = $content.prev()
+                $title = $title.prev().length==0?   $("li.subtitle_" + id).parent().parent().prev().find('.subtitle:last'):$title.prev()
+            }
             $(".showcase").css("display", "none")
-            $(".showcase_" + id).css("display", "block")
+            $content.css("display", "block")
             $("li.subtitle").removeClass("selected")
-            $("li.subtitle_" + id).addClass("selected")
+            $title.addClass("selected")
             var c = $(".nav")
             var ch = c.height()
             var cs = c.scrollTop()
@@ -61,6 +74,16 @@
                 c.scrollTop(Math.max(0, ep - eh))
             else if (ep > cs + ch)
                 c.scrollTop(Math.max(0, (ep + 4 * eh) - ch))
+        }
+
+        $('#triangle-right').click(function () {
+            switchEs6(true)
+        })
+        $('#triangle-left').click(function () {
+            switchEs6(false)
+        })
+        $(".nav a").click(function (ev) {
+            switchEs6(ev);
         })
         /*  support navigation via cursor keys  */
         var ids = []
